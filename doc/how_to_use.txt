@@ -1,0 +1,175 @@
+一、功能介绍
+    FusionStudent Platform v2.0是一款教室管理系统。可以通过该系统对教室进行增、删、查询。
+    系统可靠性优良，空间复杂度低，适合中小教育机构对课堂进行管理操作。
+    教室拥有属性：id、名称、大小和备注。
+        id: 每个教室的唯一标识。在创建教室的过程中该属性由系统自动生成，且每个教室的id不会重复。
+        名称：教室的名称。名称是可选的，可由用户指定。当用户不指定名称时，系统自动根据id生成名称。
+        大小：教室座位大小。必须是整数，且必须指定。
+        备注：教室功能备注，可选选项。
+
+    除基本功能外，FusionStudent Platform v2.0还具有日志查询功能、日志清除功能以及系统时间查询、良好的
+系统关机指令。系统关机时，会自动保存当前数据，并在下次开机时加载上一次保存的数据，供用户使用。
+
+
+二、前置条件
+    所运行的机器推荐安装Python3.6.5以及以上版本，至少保证在Python2.4版本及以上。
+
+
+三、功能
+    1。开机
+    （功能已在FusionStudent Platform 1.7.4版本验证通过）
+    运行../FusionStudent/platform.py，系统开机。显示效果如下：
+    Welcome FusionStudent Platform system.
+    FusionStudent Platform 1.7.4
+    FusionStudent Platform System starting... please wait.
+    FusionStudent Platform System start success.
+    >>>
+
+    2。查询日志：
+    （功能已在FusionStudent Platform 1.7.5版本验证通过）
+    所有产生的日志均在../FusionStudent/log目录下。
+    info.log记录日常操作；
+    error.log记录产生的错误；
+    warn.log记录产生的高危搞作。
+
+    3。命令帮助
+    （功能已在FusionStudent Platform 1.7.6版本验证通过）
+    A. 开机
+    B. 输入help命令
+    显示效果如下：
+    >>> help
+
+            system help:  show FusionStudent Platform system operation to help.
+            clear help:  clear resource operation to help.
+            class help:  create instance operation to help.
+
+    >>>
+    system help 显示system命令集帮助。显示效果如下：
+    >>> system help
+
+            system version:  show FusionStudent Platform system version.
+            system exit:  exit FusionStudent Platform system.
+            system date:  show current system date.
+
+    >>>
+        system version 显示当前版本。
+        system exit 退出系统。
+        system date 显示当前系统时间。
+    clear help 显示clear命令集帮助。显示效果如下：
+    >>> clear help
+
+            clear log [--all] [--error] [--info] [--warn]:  clear logs.
+                [--all]  clear info, error and warn logs
+                [--info]  only clear info log
+                [--error] only clear error log
+                [--warn] only clear warn log
+
+    >>>
+        clear log --all 清空全部日志文件
+        clear log --info 清空info日志文件
+        clear log --error 清空error日志文件
+        clear log --warn  清空warn日志文件
+        可以组合使用：例如 clear log --error --info
+    class help 显示class命令集帮助。显示效果如下：
+    >>> class help
+
+            class create <--name> <--size> <--remark>:  create a class.
+                <--name>  class name, str or integer param.
+                <--size>  class size, integer param.
+                <--remark>  class remark, str or integer param.
+
+            class list: show class list.
+            class delete <uuid>:  delete a class.
+                <uuid> class uuid.
+            class show <uuid>:  show a class information.
+                <uuid> class uuid.
+
+    >>>
+        class create --name 教室名字 --size 教室大小 --remark 教室功能备注 该功能用于创建教室
+        class list 查看已存在的教室列表
+        class delete uuid 删除教室
+        class show uuid 查看教室的详细信息
+
+    4。查询版本
+    （功能已在FusionStudent Platform 1.7.7版本验证通过）
+    输入命令 system version 查询当前版本。显示效果如下：
+    >>> system version
+    FusionStudent Platform 1.7.7
+
+    5。退出系统（关机）
+    （功能已在FusionStudent Platform 1.7.8版本验证通过）
+    A. 输入命令：system exit 回显如下：
+        >>> system exit
+        Are you sure about exit system?(YES/NO)
+    B. 若不退出，继续返回系统，输入 NO。回显如下：
+        Are you sure about exit system?(YES/NO) NO
+        Welcome to back.
+    C. 若仍选择退出，输入YES。回显如下：
+        Are you sure about exit system?(YES/NO) YES
+        Thanks.
+        SHUTDOWN
+        System run 104.33 seconds.
+
+    6。查询系统时间
+    （功能已在FusionStudent Platform 1.7.9版本验证通过）
+    输入命令 system date 回显如下：
+    >>> system date
+    2019/7/5 17:34:23 CST
+
+    7。清除日志功能
+    （功能已在FusionStudent Platform 1.8.0版本验证通过）
+    A. 若清除全部日志，输入命令 clear log --all 回显如下：
+        >>> clear log --all
+        Clear log success.
+    B. 清除指定日志。例如清除info日志：
+        >>> clear log --info
+        Clear log success.
+       也可以组合使用：
+        >>> clear log --info --error --warn
+        Clear log success.
+
+    8。创建class
+    （功能已在FusionStudent Platform 1.8.2版本验证通过）
+    输入命令 class create --size 教室容量(必选) --name 教室名称 --remark 教室说明
+    例如：
+    >>> class create --size 9 --name DEMO --remark DEMO_Class
+    Class R1US8TDF-4UYK-QGZ8-NF6F-TKU60175 create success.
+    新的教室(ID: R1US8TDF-4UYK-QGZ8-NF6F-TKU60175)创建成功。
+    ⚠️：remark描述中，单词与单词之间不能有空格。
+
+    9。查看class列表
+    （功能已在FusionStudent Platform 1.8.3版本验证通过）
+    输入命令 class list 查看已存在的教室列表。
+    例如：
+    >>> class list
+    +----------------------------------+
+    | uuid                             |
+    +----------------------------------+
+    | QFR5V83T-RNPG-X660-XBI0-L2H7XUCB |
+    +----------------------------------+
+    | J0NRNNYQ-H30O-O6N3-JIJ6-B6BYET0N |
+    +----------------------------------+
+    | R1US8TDF-4UYK-QGZ8-NF6F-TKU60175 |
+    +----------------------------------+
+
+    10。查看class详细信息
+    （功能已在FusionStudent Platform 1.8.4版本验证通过）
+    输入命令 class show class_ID 查看class的详细信息。例如：
+    >>> class show R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
+    +--------------------------------------------------
+    | uuid:   | R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
+    | name:   | DEMO
+    | size:   | 9
+    | remark: | DEMO_Class
+    +--------------------------------------------------
+
+    11。删除class
+    （功能已在FusionStudent Platform 1.8.6版本验证通过）
+    输入命令 class delete class_ID 删除class。例如：
+    >>> class delete R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
+    Delete class 'R1US8TDF-4UYK-QGZ8-NF6F-TKU60175' success.
+
+四、开发者介绍
+    TCatTime
+        逻辑架构，编码开发，单元测试，文档编写，缺陷修复
+    开发于2019.7@Xi'an, China
