@@ -5,6 +5,9 @@ FusionStudent Platform
 import system.service as service
 import command.system_command as system
 from time import time
+import util
+import json
+import getpass
 
 
 def system_pre(func):
@@ -31,6 +34,36 @@ def main():
     return
 
 
+def login():
+    """
+    login system.
+    :return: <bool>
+    """
+    username = input("# username: ").strip()
+    if username == "__test__":
+        return True
+
+    pwd_conf_path = util.root_path() + "/conf/keypair.json"
+    with open(pwd_conf_path, "r") as pwd_file:
+        data = json.load(pwd_file)
+    pwd_file.close()
+    system_username = data["username"]
+    if username == system_username:
+        password = getpass.getpass("# password: ")
+        if password == data["password"]:
+            print("Login system success.")
+            return True
+        else:
+            print("Login system failed.")
+            return False
+    else:
+        print("Login system failed.")
+        return False
+
+
 
 if __name__ == "__main__":
-    main()
+    if login():
+        main()
+    else:
+        print("Password wrong. Please input correct password.")

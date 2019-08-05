@@ -1,60 +1,78 @@
 一、功能介绍
-    FusionStudent Platform v2.0是一款教室管理系统。可以通过该系统对教室进行增、删、查询。
+    FusionStudent Platform v4.0是一款教室-学生管理系统。可以通过该系统对教室和学生进行增、删、查询。
     系统可靠性优良，空间复杂度低，适合中小教育机构对课堂进行管理操作。
-    教室拥有属性：id、名称、大小和备注。
+    教室拥有属性：id、名称、大小、备注、剩余空间大小（还可容纳的学生人数）、状态。
         id: 每个教室的唯一标识。在创建教室的过程中该属性由系统自动生成，且每个教室的id不会重复。
         名称：教室的名称。名称是可选的，可由用户指定。当用户不指定名称时，系统自动根据id生成名称。
-        大小：教室座位大小。必须是整数，且必须指定。
+        大小：教室座位大小。必须是整数，且必须指定。教室的大小必须是一个大于0的数字。
         备注：教室功能备注，可选选项。
+        剩余空间大小：表示教室还可以容纳的学生人数。该数据是根据教室大小和教室存在的学生数量动态生成的，
+            不由用户创建指定。
+        状态：教室状态。目前仅支持状态"Opening"。表示教室正在开放中。更多状态支持请留意版本更新。
 
-    除基本功能外，FusionStudent Platform v2.0还具有日志查询功能、日志清除功能以及系统时间查询、良好的
-系统关机指令。系统关机时，会自动保存当前数据，并在下次开机时加载上一次保存的数据，供用户使用。
+    除基本功能外，FusionStudent Platform v4.0还具有日志查询功能、日志清除功能以及系统时间查询、良好的
+系统关机指令、更换操作系统登录密码等功能。系统关机时，所有创建的数据不会丢失，系统会自动保存。
 
 
 二、前置条件
     所运行的机器推荐安装Python3.6.5以及以上版本，至少保证在Python2.4版本及以上。
 
+三、运行
+    推荐通过终端运行。进入FusionStudent目录后，使用命令：python platform.py即可运行系统。
 
-三、功能
-    1。开机
-    （功能已在FusionStudent Platform 1.7.4版本验证通过）
+
+四、功能
+    1. 开机
+    （功能已在FusionStudent Platform 3.2.6 版本验证通过。）
     运行../FusionStudent/platform.py，系统开机。显示效果如下：
+    ➜  FusionStudent python platform.py
+    # username:
+
+    2. 登录
+    （功能已在FusionStudent Platform 3.2.7 版本验证通过。）
+    运行系统后，提示需要输入账号密码才能登录。
+    账号：admin
+    默认密码：fsp@v4
+    显示效果如下：
+    # username: admin
+    # password:
+    Login system success.
     Welcome FusionStudent Platform system.
-    FusionStudent Platform 1.7.4
+    FusionStudent Platform 3.2.7
     FusionStudent Platform System starting... please wait.
     FusionStudent Platform System start success.
-    >>>
 
-    2。查询日志：
-    （功能已在FusionStudent Platform 1.7.5版本验证通过）
+    3. 查询日志：
+    （功能已在FusionStudent Platform 1.7.5版本验证通过。）
     所有产生的日志均在../FusionStudent/log目录下。
     info.log记录日常操作；
     error.log记录产生的错误；
     warn.log记录产生的高危搞作。
 
-    3。命令帮助
-    （功能已在FusionStudent Platform 1.7.6版本验证通过）
-    A. 开机
-    B. 输入help命令
+    4. 命令帮助
+    （功能已在FusionStudent Platform 3.2.8 版本验证通过。）
+    输入 'help' 命令
     显示效果如下：
     >>> help
 
             system help:  show FusionStudent Platform system operation to help.
             clear help:  clear resource operation to help.
-            class help:  create instance operation to help.
+            class help:  class operation to help.
+            student help:  student operation to help.
 
-    >>>
     system help 显示system命令集帮助。显示效果如下：
     >>> system help
 
             system version:  show FusionStudent Platform system version.
             system exit:  exit FusionStudent Platform system.
             system date:  show current system date.
+            system set password:  set admin password.
 
-    >>>
         system version 显示当前版本。
         system exit 退出系统。
         system date 显示当前系统时间。
+        system set password 更换系统开机密码。
+
     clear help 显示clear命令集帮助。显示效果如下：
     >>> clear help
 
@@ -64,12 +82,12 @@
                 [--error] only clear error log
                 [--warn] only clear warn log
 
-    >>>
         clear log --all 清空全部日志文件
         clear log --info 清空info日志文件
         clear log --error 清空error日志文件
         clear log --warn  清空warn日志文件
         可以组合使用：例如 clear log --error --info
+
     class help 显示class命令集帮助。显示效果如下：
     >>> class help
 
@@ -84,20 +102,39 @@
             class show <uuid>:  show a class information.
                 <uuid> class uuid.
 
-    >>>
         class create --name 教室名字 --size 教室大小 --remark 教室功能备注 该功能用于创建教室
         class list 查看已存在的教室列表
         class delete uuid 删除教室
         class show uuid 查看教室的详细信息
 
-    4。查询版本
-    （功能已在FusionStudent Platform 1.7.7版本验证通过）
+    student help 显示student命令集帮助。显示效果如下：
+    >>> student help
+
+            student create <--name> <--sex> <--class>:  create a student.
+               <--name>  student name, str or integer param.
+               <--sex>  student sex, it must be 'boy' or 'girl'.
+               <--class>  student class. class uuid.
+
+            student list:  show student list.
+            student delete <uuid>:  delete a student.
+                <uuid> student uuid.
+
+            student show <uuid>: show student information.
+                <uuid> student uuid.
+
+        student create --name 学生姓名 --sex 学生性别 --class 学生所属班级  该功能用于创建学生
+        student list 查看已存在的学生列表
+        student delete uuid 删除学生
+        student show uuid 查看学生的详细信息
+
+    4. 查询版本
+    （功能已在FusionStudent Platform 1.7.7版本验证通过。）
     输入命令 system version 查询当前版本。显示效果如下：
     >>> system version
     FusionStudent Platform 1.7.7
 
-    5。退出系统（关机）
-    （功能已在FusionStudent Platform 1.7.8版本验证通过）
+    5. 退出系统（关机）
+    （功能已在FusionStudent Platform 1.7.8版本验证通过。）
     A. 输入命令：system exit 回显如下：
         >>> system exit
         Are you sure about exit system?(YES/NO)
@@ -110,26 +147,29 @@
         SHUTDOWN
         System run 104.33 seconds.
 
-    6。查询系统时间
-    （功能已在FusionStudent Platform 1.7.9版本验证通过）
+    6. 查询系统时间
+    （功能已在FusionStudent Platform 1.7.9版本验证通过。）
     输入命令 system date 回显如下：
     >>> system date
     2019/7/5 17:34:23 CST
 
-    7。清除日志功能
-    （功能已在FusionStudent Platform 1.8.0版本验证通过）
+    7. 清除日志功能
+    （功能已在FusionStudent Platform 3.3.RC1 版本验证通过。）
     A. 若清除全部日志，输入命令 clear log --all 回显如下：
         >>> clear log --all
         Clear log success.
     B. 清除指定日志。例如清除info日志：
         >>> clear log --info
         Clear log success.
+       清除error日志：
+        >>> clear logs --error
+        Clear log success.
        也可以组合使用：
         >>> clear log --info --error --warn
         Clear log success.
 
-    8。创建class
-    （功能已在FusionStudent Platform 1.8.2版本验证通过）
+    8. 创建class
+    （功能已在FusionStudent Platform 1.8.2版本验证通过。）
     输入命令 class create --size 教室容量(必选) --name 教室名称 --remark 教室说明
     例如：
     >>> class create --size 9 --name DEMO --remark DEMO_Class
@@ -137,8 +177,8 @@
     新的教室(ID: R1US8TDF-4UYK-QGZ8-NF6F-TKU60175)创建成功。
     ⚠️：remark描述中，单词与单词之间不能有空格。
 
-    9。查看class列表
-    （功能已在FusionStudent Platform 1.8.3版本验证通过）
+    9. 查看class列表
+    （功能已在FusionStudent Platform 1.8.3版本验证通过。）
     输入命令 class list 查看已存在的教室列表。
     例如：
     >>> class list
@@ -152,24 +192,64 @@
     | R1US8TDF-4UYK-QGZ8-NF6F-TKU60175 |
     +----------------------------------+
 
-    10。查看class详细信息
-    （功能已在FusionStudent Platform 1.8.4版本验证通过）
+    10. 查看class详细信息
+    （功能已在FusionStudent Platform 3.3.0 版本验证通过。）
     输入命令 class show class_ID 查看class的详细信息。例如：
-    >>> class show R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
-    +--------------------------------------------------
-    | uuid:   | R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
-    | name:   | DEMO
-    | size:   | 9
-    | remark: | DEMO_Class
-    +--------------------------------------------------
+    >>> class show YR29XCJZ-EWB0-GK1U-K5TT-WHMQIO8T
+    +---------+----------------------------------------
+    | uuid:   | YR29XCJZ-EWB0-GK1U-K5TT-WHMQIO8T
+    | name:   | test
+    | size:   | 8
+    | remark: | None
+    | free:   | 8
+    | status: | Opening
+    +---------+----------------------------------------
 
-    11。删除class
-    （功能已在FusionStudent Platform 1.8.6版本验证通过）
+    11. 删除class
+    （功能已在FusionStudent Platform 3.3.1 版本验证通过。）
     输入命令 class delete class_ID 删除class。例如：
     >>> class delete R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
     Delete class 'R1US8TDF-4UYK-QGZ8-NF6F-TKU60175' success.
+    ⚠️ 当class内存在student实例时，class不能删除。
+
+    12. 创建student
+    （功能已在FusionStudent Platform 3.3.2 版本验证通过。）
+    >>> student create --name Bob --sex boy --class YR29XCJZ-EWB0-GK1U-K5TT-WHMQIO8T
+    Student vm3f11js-6ggg-bg8h-urhw-2jfp179q create success.
+
+    13. 显示student列表
+    （功能已在FusionStudent Platform 3.3.3 版本验证通过。）
+    >>> student list
+    +----------------------------------+
+    | uuid                             |
+    +----------------------------------+
+    | vm3f11js-6ggg-bg8h-urhw-2jfp179q |
+    +----------------------------------+
+
+    14. 显示student详情
+    （功能已在FusionStudent Platform 3.3.3 版本验证通过。）
+    >>> student show vm3f11js-6ggg-bg8h-urhw-2jfp179q
+    +---------+----------------------------------------
+    | uuid:   | vm3f11js-6ggg-bg8h-urhw-2jfp179q
+    | name:   | Bob
+    | sex:    | boy
+    | class:  | YR29XCJZ-EWB0-GK1U-K5TT-WHMQIO8T
+    +---------+----------------------------------------
+
+    15. 删除student
+    （功能已在FusionStudent Platform 3.3.4 版本验证通过。）
+    >>> student delete vm3f11js-6ggg-bg8h-urhw-2jfp179q
+
+    16. 修改admin密码
+    （功能已在FusionStudent Platform 3.3.5 版本验证通过。）
+    >>> system set password
+    old password:
+    new password:
 
 四、开发者介绍
     TCatTime
         逻辑架构，编码开发，单元测试，文档编写，缺陷修复
+    LuYao
+        需求建议
+
     开发于2019.7@Xi'an, China

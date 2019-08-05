@@ -6,11 +6,14 @@ import command.help_command as help
 import command.system_command as system
 import command.clear_command as clears
 import command.class_command as cls_cmd
+import command.student_command as stu_cmd
 import logger.log as logs
 import traceback
 import prepare
 import util
-from exception.fusionexception import InputError, ClassException
+import getpass
+from exception.fusionexception import InputError, ClassException, StudentException
+from exception.fusionexception import SystemError
 
 def handle(command):
     command_list = command.split()
@@ -27,11 +30,11 @@ def fusion_system():
     # set resource
     print("FusionStudent Platform System starting... please wait.")
     logs.info("FusionStudent Platform System start...")
-    classes = {}
-    id_pools = {
-        "class": []
+    ins = {
+        "classes": {},
+        "students": {}
     }
-    prepare.upload(classes, id_pools)
+    prepare.upload(ins)
     print("FusionStudent Platform System start success.")
 
     # running system
@@ -63,10 +66,23 @@ def fusion_system():
                         continue
                 except InputError as e:
                     print(str(e))
+                    logs.error(traceback.format_exc())
                     continue
 
             elif command == "system date":
                 print(system.system_date())
+
+            elif command == "system set password":
+                try:
+                    old_pwd = getpass.getpass("old password: ")
+                    new_pwd = getpass.getpass("new password: ")
+                    util.set_password(old_pwd, new_pwd)
+                except SystemError as e:
+                    print("Change new password failed. Please input correct password.")
+                    logs.error(str(e))
+                    logs.error(traceback.format_exc())
+                    continue
+
             else:
                 print("Invalid command input '%s'. "
                       "Please input help for more information." % command)
@@ -103,6 +119,8 @@ def fusion_system():
                     print("Clear log success.")
                 except InputError as e:
                     print(str(e))
+                    logs.error(str(e))
+                    logs.error(traceback.format_exc())
                     continue
 
             elif command == "clear help":
@@ -138,7 +156,7 @@ def fusion_system():
                                              % command_list[index])
                         index += 1
 
-                    util.create(type, id_pools, classes, name=name, size=size,
+                    util.create(type, ins, name=name, size=size,
                                 remark=remark)
                 except InputError as e:
                     print(str(e))
@@ -157,7 +175,7 @@ def fusion_system():
                 help.help_doc("class")
 
             elif command == "class list":
-                cls_cmd.class_show(classes)
+                cls_cmd.class_show(ins)
 
             elif command.startswith("class delete"):
                 try:
@@ -169,7 +187,7 @@ def fusion_system():
                         continue
 
                     uuid = command_list[-1]
-                    util.class_delete(classes, uuid)
+                    util.class_delete(ins, uuid)
                 except ClassException as e:
                     print(str(e))
                     continue
@@ -184,10 +202,94 @@ def fusion_system():
                         continue
 
                     uuid = command_list[-1]
-                    util.show_class(classes, uuid)
+                    util.show_class(ins, uuid)
                 except ClassException as e:
                     print(str(e))
                     continue
+
+            else:
+                print("Invalid command input '%s'. "
+                      "Please input help for more information." % command)
+                logs.error("Invalid command %s input." % command)
+
+        elif command.startswith("student"):
+            if command == "student help":
+                help.help_doc("student")
+
+            elif command.startswith("student create"):
+                try:
+                    command_list = command.split()[2:]
+                    index = 0
+                    type = "student"
+                    name = None
+                    sex = None
+                    class_id = None
+                    while index < len(command_list):
+                        if command_list[index] == "--name":
+                            index += 1
+                            name = command_list[index]
+                        elif command_list[index] == "--sex":
+                            index += 1
+                            sex = command_list[index]
+                        elif command_list[index] == "--class":
+                            index += 1
+                            class_id = command_list[index]
+                        else:
+                            raise InputError("Invalid param %s. "
+                                             "Please input 'help' for more information."
+                                             % command_list[index])
+                        index += 1
+
+                    util.create(type, ins, name=name, sex=sex, class_id=class_id)
+                except InputError as e:
+                    print(str(e))
+                    continue
+                except ClassException as e:
+                    print(str(e))
+                    continue
+                except StudentException as e:
+                    print(str(e))
+                    continue
+
+            elif command == "student list":
+                stu_cmd.student_list(ins)
+
+            elif command.startswith("student delete"):
+                try:
+                    command_list = command.split()
+                    if len(command_list) != 3:
+                        raise InputError("Invalid command '%s' input. "
+                                         "Please input help for more information.")
+                    uuid = command_list[-1]
+                    util.delete_student(uuid, ins)
+
+                except InputError as e:
+                    print(str(e))
+                    continue
+                except StudentException as e:
+                    print(str(e))
+                    continue
+
+            elif command.startswith("student show"):
+                try:
+                    command_list = command.split()
+                    if len(command_list) != 3:
+                        raise InputError("Invalid command '%s' input. "
+                                         "Please input help for more information.")
+                    uuid = command_list[-1]
+                    stu_cmd.show_student(uuid, ins)
+
+                except InputError as e:
+                    print(str(e))
+                    logs.error(str(e))
+                    logs.error(traceback.format_exc())
+                    continue
+                except StudentException as e:
+                    print(str(e))
+                    logs.error(str(e))
+                    logs.error(traceback.format_exc())
+                    continue
+
 
             else:
                 print("Invalid command input '%s'. "

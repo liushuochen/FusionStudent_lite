@@ -16,7 +16,8 @@ def help_doc(type="help"):
         message = """
             system help:  show FusionStudent Platform system operation to help.
             clear help:  clear resource operation to help.
-            class help:  create instance operation to help.
+            class help:  class operation to help.
+            student help:  student operation to help.
         """
 
     elif type == "system":
@@ -24,6 +25,7 @@ def help_doc(type="help"):
             system version:  show FusionStudent Platform system version.
             system exit:  exit FusionStudent Platform system.
             system date:  show current system date.
+            system set password:  set admin password.
         """
 
     elif type == "clear":
@@ -47,6 +49,21 @@ def help_doc(type="help"):
                 <uuid> class uuid.
             class show <uuid>:  show a class information.
                 <uuid> class uuid.
+        """
+
+    elif type == "student":
+        message = """
+            student create <--name> <--sex> <--class>:  create a student.
+               <--name>  student name, str or integer param. 
+               <--sex>  student sex, it must be 'boy' or 'girl'.
+               <--class>  student class. class uuid.
+            
+            student list:  show student list.
+            student delete <uuid>:  delete a student.
+                <uuid> student uuid.
+                
+            student show <uuid>: show student information.
+                <uuid> student uuid.
         """
 
     print(message)

@@ -1,0 +1,35 @@
+FusionStudent Platform v4.0 new function:
+    1. 登录系统
+       输入admin账号，输入正确的密码，登录系统。
+
+    2. 创建学生实例
+        输入学生姓名，性别和所属班级，创建学生实例。
+        同时对删除class实例做了限制。当class实例中存在student实例时，该class实例不允许删除。
+
+    3. 查看学生实例列表
+        可以通过命令查看学生列表。
+
+    4. 优化class命令性能
+        使用class命令操作的速度更快了。
+
+    5. 更改admin密码功能
+        可以使用命令更换admin密码。
+
+    6. class实例的新参数
+        增加class实例的新参数
+        A.free
+            class实例的闲置资源数，表示还可以继续在此增加的学生实例数。
+        B.status
+            class实例的状态参数，表示class实例的状态。目前只有"Opening"一个状态，表示class在开放中。
+
+    7. 删除学生实例
+        通过命令可以删除指定id的学生实例。
+
+    8. 查看学生实例详情
+        输入学生id查看学生实例详情。
+
+    9. 优化显示class实例详情。
+        class show <uuid>命令的回显优化。
+
+    10. 修复帮助命令 'help' 的显示bug
+        修复了 FusionStudent Platform v2.0 版本使用 'help' 命令后class help描述不准确问题。
