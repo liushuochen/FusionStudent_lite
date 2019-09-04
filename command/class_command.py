@@ -76,12 +76,20 @@ def class_show(ins):
     :param ins: <dict> instance dict
     :return: <None>
     """
-    print("+" + "-" * 34 + "+")
-    print("| uuid" + " " * 28 + " |")
-    print("+" + "-" * 34 + "+")
+    print("+" + "-" * 34 + "+" + "-" * 8 + "+")
+    print("| uuid" + " " * 28 + " |" + " name   |")
+    print("+" + "-" * 34 + "+" + "-" * 8 + "+")
     for item in ins["classes"]:
-        print("| " + item + " |")
-        print("+" + "-" * 34 + "+")
+        class_instance = ins["classes"][item]
+        name = class_instance.name
+        if len(name) > 6:
+            name = name[:6]
+
+        if len(name) < 6:
+            space = 6 - len(name)
+            name = name + " " * space
+        print("| " + item + " | " + name + " |")
+        print("+" + "-" * 34 + "+" + "-" * 8 + "+")
 
     return
 
@@ -173,5 +181,20 @@ def set_param(uuid, param, value):
     with open(conf_url, "w") as conf_file:
         json.dump(data, conf_file, indent=4)
     conf_file.close()
-    logs.info("Set class '%s' param '%s' new value '%s' success." % (uuid, param, value))
+    logs.info("Set class '%s' param '%s' new value '%s' success." %
+              (uuid, param, value))
+    return
+
+
+def set_status(uuid, new_status, ins):
+    """
+    Set class status.
+    :param uuid: <str> class uuid
+    :param new_status: <str> new class status
+    :param ins: <dict> instance dict
+    :return: <None>
+    """
+    ins["classes"][uuid].status = new_status
+    set_param(uuid, "status", new_status)
+    logs.info("Class '%s' new status is %s." % (uuid, new_status))
     return
