@@ -4,6 +4,7 @@ help commands.
     "exit help" --> help_doc("exit")
 """
 
+
 def help_doc(type="help"):
     """
     command "help".
@@ -25,7 +26,7 @@ def help_doc(type="help"):
             system version:  show FusionStudent Platform system version.
             system exit:  exit FusionStudent Platform system.
             system date:  show current system date.
-            system set password:  set admin password.
+            system reset password:  reset admin password.
         """
 
     elif type == "clear":
@@ -35,6 +36,9 @@ def help_doc(type="help"):
                 [--info]  only clear info log
                 [--error] only clear error log
                 [--warn] only clear warn log
+
+            clear system:  Clean up all the data on the FusionStudent Platform lite system.
+                It's a dangerous operation.
         """
 
     elif type == "class":
@@ -43,11 +47,15 @@ def help_doc(type="help"):
                 <--name>  class name, str or integer param.
                 <--size>  class size, integer param.
                 <--remark>  class remark, str or integer param.
-            
+
             class list: show class list.          
             class delete <uuid>:  delete a class.
                 <uuid> class uuid.
             class show <uuid>:  show a class information.
+                <uuid> class uuid.             
+            class lock <uuid>:  lock a class.
+                <uuid> class uuid.
+            class unlock <uuid>: unlock a class.
                 <uuid> class uuid.
         """
 
@@ -57,11 +65,11 @@ def help_doc(type="help"):
                <--name>  student name, str or integer param. 
                <--sex>  student sex, it must be 'boy' or 'girl'.
                <--class>  student class. class uuid.
-            
+
             student list:  show student list.
             student delete <uuid>:  delete a student.
                 <uuid> student uuid.
-                
+
             student show <uuid>: show student information.
                 <uuid> student uuid.
         """
