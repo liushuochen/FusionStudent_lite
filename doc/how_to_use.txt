@@ -1,5 +1,5 @@
 一、功能介绍
-    FusionStudent Platform v4.0是一款教室-学生管理系统。可以通过该系统对教室和学生进行增、删、查询。
+    FusionStudent Platform v5.0是一款教室-学生管理系统。可以通过该系统对教室和学生进行增、删、查询。
     系统可靠性优良，空间复杂度低，适合中小教育机构对课堂进行管理操作。
     教室拥有属性：id、名称、大小、备注、剩余空间大小（还可容纳的学生人数）、状态。
         id: 每个教室的唯一标识。在创建教室的过程中该属性由系统自动生成，且每个教室的id不会重复。
@@ -8,16 +8,20 @@
         备注：教室功能备注，可选选项。
         剩余空间大小：表示教室还可以容纳的学生人数。该数据是根据教室大小和教室存在的学生数量动态生成的，
             不由用户创建指定。
-        状态：教室状态。目前仅支持状态"Opening"。表示教室正在开放中。更多状态支持请留意版本更新。
+        状态：教室状态。目前支持状态如下：
+            1. "Opening"。表示教室正在开放中。
+            2. "Lock"。表示教室处于锁定状态。
 
-    除基本功能外，FusionStudent Platform v4.0还具有日志查询功能、日志清除功能以及系统时间查询、良好的
-系统关机指令、更换操作系统登录密码等功能。系统关机时，所有创建的数据不会丢失，系统会自动保存。
+    除基本功能外，FusionStudent Platform v5.0 还具有日志查询功能、日志清除功能以及系统时间查询、良
+    好的系统关机指令、更换操作系统登录密码以及恢复出厂设置等功能。系统关机时，所有创建的数据不会丢失，
+    系统会自动保存。
 
 
 二、前置条件
     所运行的机器推荐安装Python3.6.5以及以上版本，至少保证在Python2.4版本及以上。
 
-三、运行
+三、运行条件
+    推荐运行平台Mac OS X
     推荐通过终端运行。进入FusionStudent目录后，使用命令：python platform.py即可运行系统。
 
 
@@ -32,7 +36,7 @@
     （功能已在FusionStudent Platform 3.2.7 版本验证通过。）
     运行系统后，提示需要输入账号密码才能登录。
     账号：admin
-    默认密码：fsp@v4
+    默认密码：123fs
     显示效果如下：
     # username: admin
     # password:
@@ -50,7 +54,7 @@
     warn.log记录产生的高危搞作。
 
     4. 命令帮助
-    （功能已在FusionStudent Platform 3.2.8 版本验证通过。）
+    （功能已在FusionStudent Platform lite 4.4.0 版本验证通过。）
     输入 'help' 命令
     显示效果如下：
     >>> help
@@ -66,12 +70,12 @@
             system version:  show FusionStudent Platform system version.
             system exit:  exit FusionStudent Platform system.
             system date:  show current system date.
-            system set password:  set admin password.
+            system reset password:  reset admin password.
 
         system version 显示当前版本。
         system exit 退出系统。
         system date 显示当前系统时间。
-        system set password 更换系统开机密码。
+        system reset password 更换系统开机密码。
 
     clear help 显示clear命令集帮助。显示效果如下：
     >>> clear help
@@ -82,11 +86,17 @@
                 [--error] only clear error log
                 [--warn] only clear warn log
 
+            clear system:  Clean up all the data on the FusionStudent Platform lite system.
+                It's a dangerous operation.
+
         clear log --all 清空全部日志文件
         clear log --info 清空info日志文件
         clear log --error 清空error日志文件
         clear log --warn  清空warn日志文件
         可以组合使用：例如 clear log --error --info
+
+        clear system    恢复出厂设置。
+        ⚠️该操作是危险操作，请谨慎使用。
 
     class help 显示class命令集帮助。显示效果如下：
     >>> class help
@@ -101,11 +111,17 @@
                 <uuid> class uuid.
             class show <uuid>:  show a class information.
                 <uuid> class uuid.
+            class lock <uuid>:  lock a class.
+                <uuid> class uuid.
+            class unlock <uuid>: unlock a class.
+                <uuid> class uuid.
 
         class create --name 教室名字 --size 教室大小 --remark 教室功能备注 该功能用于创建教室
         class list 查看已存在的教室列表
         class delete uuid 删除教室
         class show uuid 查看教室的详细信息
+        class lock uuid 锁定一个教室，教室的状态由Opening变为Lock
+        class unlock uuid 解锁一个教室，教室的状态由Lock变为Opening
 
     student help 显示student命令集帮助。显示效果如下：
     >>> student help
@@ -134,7 +150,7 @@
     FusionStudent Platform 1.7.7
 
     5. 退出系统（关机）
-    （功能已在FusionStudent Platform 1.7.8版本验证通过。）
+    （功能已在 FusionStudent Platform lite 4.6.6 版本验证通过。）
     A. 输入命令：system exit 回显如下：
         >>> system exit
         Are you sure about exit system?(YES/NO)
@@ -146,6 +162,11 @@
         Thanks.
         SHUTDOWN
         System run 104.33 seconds.
+    ⚠️ 若不使用该命令强制退出，会导致系统无法使用正常命令再次登录。
+      若意外情况导致此问题发生，按如下方式规避：
+      打开../FusionStudent/conf/keypair.json
+      将 login 对应的值修改为 false
+      重新使用命令开机即可
 
     6. 查询系统时间
     （功能已在FusionStudent Platform 1.7.9版本验证通过。）
@@ -154,7 +175,7 @@
     2019/7/5 17:34:23 CST
 
     7. 清除日志功能
-    （功能已在FusionStudent Platform 3.3.RC1 版本验证通过。）
+    （功能已在FusionStudent Platform lite 4.4.1 版本验证通过。）
     A. 若清除全部日志，输入命令 clear log --all 回显如下：
         >>> clear log --all
         Clear log success.
@@ -163,6 +184,9 @@
         Clear log success.
        清除error日志：
         >>> clear logs --error
+        Clear log success.
+       清除warn日志：
+        >>> clear log --warn
         Clear log success.
        也可以组合使用：
         >>> clear log --info --error --warn
@@ -178,19 +202,15 @@
     ⚠️：remark描述中，单词与单词之间不能有空格。
 
     9. 查看class列表
-    （功能已在FusionStudent Platform 1.8.3版本验证通过。）
+    （功能已在FusionStudent Platform lite 4.4.1版本验证通过。）
     输入命令 class list 查看已存在的教室列表。
     例如：
     >>> class list
-    +----------------------------------+
-    | uuid                             |
-    +----------------------------------+
-    | QFR5V83T-RNPG-X660-XBI0-L2H7XUCB |
-    +----------------------------------+
-    | J0NRNNYQ-H30O-O6N3-JIJ6-B6BYET0N |
-    +----------------------------------+
-    | R1US8TDF-4UYK-QGZ8-NF6F-TKU60175 |
-    +----------------------------------+
+    +----------------------------------+--------+
+    | uuid                             | name   |
+    +----------------------------------+--------+
+    | W97OZ2R9-5NPD-OK4X-O2YU-7VIWKH7N | Java   |
+    +----------------------------------+--------+
 
     10. 查看class详细信息
     （功能已在FusionStudent Platform 3.3.0 版本验证通过。）
@@ -206,18 +226,36 @@
     +---------+----------------------------------------
 
     11. 删除class
-    （功能已在FusionStudent Platform 3.3.1 版本验证通过。）
+    （功能已在FusionStudent Platform lite 4.4.3 版本验证通过。）
     输入命令 class delete class_ID 删除class。例如：
     >>> class delete R1US8TDF-4UYK-QGZ8-NF6F-TKU60175
     Delete class 'R1US8TDF-4UYK-QGZ8-NF6F-TKU60175' success.
     ⚠️ 当class内存在student实例时，class不能删除。
+    ⚠️ 当class处于Lock状态时，class不能删除。
 
-    12. 创建student
-    （功能已在FusionStudent Platform 3.3.2 版本验证通过。）
+    12. 锁定class
+    （功能已在FusionStudent Platform lite 4.5.1 版本验证通过。）
+    输入命令 class lock <uuid> 锁定一个class
+    >>> class lock 6MW24UVO-17TP-BX8G-ULFC-LKJUIUQP
+
+    class锁定后，状态变更为Lock。不能删除、不能添加和删除该class下的学生，恢复出厂设置也会失败。
+    ⚠️ 只有当class状态为Opening时才能执行此命令
+
+    13. 解锁class
+    （功能已在FusionStudent Platform lite 4.5.2 版本验证通过。）
+    输入命令 class unlock <uuid> 解锁一个class
+    >>> class unlock 6MW24UVO-17TP-BX8G-ULFC-LKJUIUQP
+
+    class解锁后，状态恢复成Opening。
+    ⚠️ 只有当class状态为Lock时才能执行此命令
+
+    14. 创建student
+    （功能已在FusionStudent Platform lite 4.4.4 版本验证通过。）
     >>> student create --name Bob --sex boy --class YR29XCJZ-EWB0-GK1U-K5TT-WHMQIO8T
     Student vm3f11js-6ggg-bg8h-urhw-2jfp179q create success.
+    ⚠️ 当class的free小于或等于0时，student创建失败。
 
-    13. 显示student列表
+    15. 显示student列表
     （功能已在FusionStudent Platform 3.3.3 版本验证通过。）
     >>> student list
     +----------------------------------+
@@ -226,7 +264,7 @@
     | vm3f11js-6ggg-bg8h-urhw-2jfp179q |
     +----------------------------------+
 
-    14. 显示student详情
+    16. 显示student详情
     （功能已在FusionStudent Platform 3.3.3 版本验证通过。）
     >>> student show vm3f11js-6ggg-bg8h-urhw-2jfp179q
     +---------+----------------------------------------
@@ -236,20 +274,38 @@
     | class:  | YR29XCJZ-EWB0-GK1U-K5TT-WHMQIO8T
     +---------+----------------------------------------
 
-    15. 删除student
-    （功能已在FusionStudent Platform 3.3.4 版本验证通过。）
+    17. 删除student
+    （功能已在FusionStudent Platform lite 4.4.5 版本验证通过。）
+    输入命令 student delete <uuid> 删除一个学生实例。
     >>> student delete vm3f11js-6ggg-bg8h-urhw-2jfp179q
+    ⚠️ 当student所在的class处于Lock状态时，student无法删除。
+    ⚠️ 当删除一个不存在的学生uuid时，删除失败。
 
-    16. 修改admin密码
-    （功能已在FusionStudent Platform 3.3.5 版本验证通过。）
-    >>> system set password
-    old password:
-    new password:
+    18. 修改admin密码
+    （功能已在 FusionStudent Platform lite 4.4.6 版本验证通过。）
+    >>> system reset password
+    Old password:
+    New password:
+    New password confirmation:
+    ⚠️ 输入旧密码错误会造成修改密码失败，失败信息会在整个流程后报出。
+    ⚠️ 修改密码需要在重复确认一次。重复确认的密码若于第一次输入的密码不一致，修改密码失败。
+
+    19. 恢复出厂设置
+    （此功能已在 FusionStudent Platform lite 4.5.0 版本验证通过。）
+    恢复出厂设置，删除环境中存在的所有数据（实例和日志），并不保存数据关机。
+    命令输入后会弹出操作确认提示，输入YES后在5秒后系统开始恢复出厂设置。
+    该操作属于危险操作，请谨慎使用。
+    >>> clear system
+    WARNING: It's a dangerous operation. Are you sure you still want to do this operation?(YES/NO) YES
+    System will be clear in 5 seconds.
+    Delete class 'W97OZ2R9-5NPD-OK4X-O2YU-7VIWKH7N' success.
+    System clean up success. It will shutdown in 5 seconds.
+    SHUTDOWN
+    System run 111.56 seconds.
+    ⚠️ 如果环境中存在Lock状态的class，恢复出厂设置失败。
 
 四、开发者介绍
     TCatTime
         逻辑架构，编码开发，单元测试，文档编写，缺陷修复
-    LuYao
-        需求建议
 
-    开发于2019.7@Xi'an, China
+    开发于2019.8@Beijing, China
