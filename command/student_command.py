@@ -22,6 +22,10 @@ def create_student(body, ins):
         logs.error("Create student failed. Point class '%s' not found." % class_uuid)
         raise ClassException("Class %s not found." % class_uuid, 400)
 
+    if util.get_class_status(class_uuid, ins) == util.CLASS_STATUS_LOCK:
+        raise StudentException("Create student failed. class '%s' status is Lock."
+                               % class_uuid, 402)
+
     uuid = body["uuid"]
     if uuid in ins["students"]:
         logs.error("Create student failed. BadRequest: uuid '%s' has already exist." % uuid)
@@ -121,6 +125,7 @@ def destroy_student(path, stu_id):
     else:
         raise StudentException("Student '%s' config file not found." % stu_id, 500)
     logs.info("Destroy student '%s' success." % stu_id)
+    print("Delete student '%s' success." % stu_id)
 
     return
 
