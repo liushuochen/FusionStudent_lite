@@ -8,14 +8,21 @@ import random
 import command.class_command as class_cmd
 import command.student_command as stu_cmd
 import logger.log as logs
-from exception.fusionexception import ClassException, SystemError, StudentException
 import json
+from exception.fusionexception import ClassException, SystemError, StudentException
 
 STUDENT_UUID_POOL = string.digits + string.ascii_lowercase
 CLASS_UUID_POOL = string.ascii_uppercase + string.digits
 
 CLASS_STATUS_OPENING = "Opening"
 CLASS_STATUS_ERROR = "Error"
+CLASS_STATUS_LOCK = "Lock"
+
+CLASS_STATUS_POOL = {
+    CLASS_STATUS_OPENING,
+    CLASS_STATUS_ERROR,
+    CLASS_STATUS_LOCK
+}
 
 class ClassInstance():
     def __init__(self, body):
@@ -156,7 +163,7 @@ def create(type, ins, **kwargs):
 
         size = kwargs["size"]
         remark = kwargs["remark"]
-        status = "Opening"
+        status = CLASS_STATUS_OPENING
 
         req = {
             "uuid": uuid,
@@ -202,12 +209,15 @@ def class_delete(ins, uuid):
         logs.error("Delete class failed. uuid '%s' not exist!" % uuid)
         raise ClassException("BadRequest: uuid '%s' not exist!" % uuid, 401)
 
+    if get_class_status(uuid, ins) == CLASS_STATUS_LOCK:
+        raise ClassException("Delete Class '%s' failed. Class is Lock!" % uuid
+                             , 403)
+
     class_ins = ins["classes"][uuid]
     if class_ins.next is not None:
-        logs.info("*****class_ins next : %s" % class_ins.next)
-        logs.info("*****type: %s" % type(class_ins.next))
         logs.error("Delete class failed. class '%s' is not empty." % uuid)
-        raise ClassException("Can not delete class. Class '%s' is not empty." % uuid, 500)
+        raise ClassException("Can not delete class. Class '%s' is not empty." % uuid,
+                             500)
 
     return class_cmd.destroy_class(ins, uuid)
 
@@ -267,6 +277,10 @@ def delete_student(stu_id, ins):
 
     stu = ins["students"][stu_id]
     class_uuid = stu.class_ins
+    class_status = get_class_status(class_uuid, ins)
+    if class_status == CLASS_STATUS_LOCK:
+        raise StudentException("Delete student %s failed. Class %s is Lock."
+                               % (stu_id, class_uuid), 402)
     class_ins = ins["classes"][class_uuid]
     pre1 = class_ins
     pre2 = pre1.next
@@ -287,3 +301,76 @@ def delete_student(stu_id, ins):
     class_cmd.set_param(class_uuid, "student_number", class_ins.student_number)
 
     return stu_cmd.destroy_student(student_path, stu_id)
+
+
+def check_clear_all_instance():
+    select = input("WARNING: It's a dangerous operation."
+                   " Are you sure you still want to do this operation?(YES/NO) ").strip()
+
+    if select == "YES":
+        return True
+    else:
+        return False
+
+
+def set_class_status(uuid, status, ins):
+    """
+    Set class status.
+    :param uuid: <str> class uuid
+    :param status: <str> new class status
+    :param ins: <dict> instance dict
+    :return: <None>
+    """
+    if status not in CLASS_STATUS_POOL:
+        raise ClassException("Invalid new class status '%s'." % status, 404)
+
+    current_status = get_class_status(uuid, ins)
+    if current_status == status:
+        raise ClassException("Set class '%s' status failed. Class status is %s now."
+                             % (uuid, current_status), 403)
+
+    return class_cmd.set_status(uuid, status, ins)
+
+
+def get_class_status(uuid, ins):
+    """
+    Get class status.
+    :param uuid: <str> class uuid
+    :param ins: <dict> instance dict
+    :return: <str> class status
+    """
+    if uuid not in ins["classes"]:
+        raise ClassException("Class '%s' not found.", 404)
+    return ins["classes"][uuid].status
+
+
+def lock_class(uuid, ins):
+    """
+    Lock class.
+    :param uuid: <str> class uuid
+    :param ins: <dict> instance dict
+    :return: <None>
+    """
+    if uuid not in ins["classes"]:
+        raise ClassException("Class '%s' not found." % uuid, 404)
+
+    if get_class_status(uuid, ins) != CLASS_STATUS_OPENING:
+        raise ClassException("Class %s is not Opening, can not Lock." % uuid, 402)
+
+    return set_class_status(uuid, CLASS_STATUS_LOCK, ins)
+
+
+def unlock_class(uuid, ins):
+    """
+    Unlock class.
+    :param uuid: <str> class uuid
+    :param ins: <dict> instance dict
+    :return: <None>
+    """
+    if uuid not in ins["classes"]:
+        raise ClassException("Class '%s' not found." % uuid, 404)
+
+    if get_class_status(uuid, ins) != CLASS_STATUS_LOCK:
+        raise ClassException("Class '%s' is not lock." % uuid, 402)
+
+    return set_class_status(uuid, CLASS_STATUS_OPENING, ins)
