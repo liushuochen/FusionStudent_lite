@@ -7,6 +7,7 @@ system commands.
 
 import datetime
 import util
+import json
 from exception.fusionexception import InputError
 
 
@@ -28,6 +29,15 @@ def exit_system():
     """
     commit = input("Are you sure about exit system?(YES/NO) ").strip()
     if commit == "YES":
+        pwd_conf_path = util.root_path() + "/conf/keypair.json"
+        with open(pwd_conf_path, "r") as pwd_file:
+            data = json.load(pwd_file)
+        pwd_file.close()
+        data["login"] = False
+        with open(pwd_conf_path, "w") as pwd_file:
+            json.dump(data, pwd_file, indent=4)
+        pwd_file.close()
+
         print("Thanks.")
         return True
     elif commit == "NO":
