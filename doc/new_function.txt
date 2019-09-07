@@ -1,35 +1,43 @@
-FusionStudent Platform v4.0 new function:
-    1. 登录系统
-       输入admin账号，输入正确的密码，登录系统。
+FusionStudent Platform lite v5.0 new function:
 
-    2. 创建学生实例
-        输入学生姓名，性别和所属班级，创建学生实例。
-        同时对删除class实例做了限制。当class实例中存在student实例时，该class实例不允许删除。
+    1. 版本名称改动
+        版本在以后分为两个场景：
+        FusionStudent Platform
+        FusionStudent Platform lite
+        其中FusionStudent Platform场景对接MySql数据库存储和查找数据。
+        FusionStudent Platform lite场景沿用发布版本FusionStudent Platform v4.0采用本地存储
+            和查找数据。
+        FusionStudent Platform以下简称全量场景。
+        FusionStudent Platform lite以下简称轻量场景。
+        全量场景适用于数据量大的使用情况。
+        轻量场景适用于数据量小的使用情况。
 
-    3. 查看学生实例列表
-        可以通过命令查看学生列表。
+        全量场景FusionStudent Platform功能暂时与轻量场景不同。
 
-    4. 优化class命令性能
-        使用class命令操作的速度更快了。
 
-    5. 更改admin密码功能
-        可以使用命令更换admin密码。
+    2. 修改admin密码优化
+       (1) 修改admin密码优化，在输入新密码后有一个重复性校验。
+       (2) 修改admin密码命令优化，新命令：system reset password
 
-    6. class实例的新参数
-        增加class实例的新参数
-        A.free
-            class实例的闲置资源数，表示还可以继续在此增加的学生实例数。
-        B.status
-            class实例的状态参数，表示class实例的状态。目前只有"Opening"一个状态，表示class在开放中。
 
-    7. 删除学生实例
-        通过命令可以删除指定id的学生实例。
+    3. 优化命令class list显示：
+        class list命令可以同时显示class的uuid和name属性了。
 
-    8. 查看学生实例详情
-        输入学生id查看学生实例详情。
 
-    9. 优化显示class实例详情。
-        class show <uuid>命令的回显优化。
+    4. 恢复出厂设置
+        新的命令 clear system
+        抹除FusionStudent Platform lite系统上的所有数据并关机。
+        ⚠️该操作不可逆，属于危险操作。
 
-    10. 修复帮助命令 'help' 的显示bug
-        修复了 FusionStudent Platform v2.0 版本使用 'help' 命令后class help描述不准确问题。
+    5. 增加class新状态
+        新增加class状态 "Lock"
+
+    6. 锁定class
+        锁定class。当class锁定时，class无法删除、无法删除其学生、添加学生以及修改该class的状态。
+        当且仅当class状态为Opening时，才可锁定。
+
+    7. 解锁class
+        解锁锁定状态的class。使其恢复Opening状态。
+
+    8. 修复版本遗留bug:
+        FusionStudent v4.0 重复性登录系统导致程序可能崩溃的场景。
