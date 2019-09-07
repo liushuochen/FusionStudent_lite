@@ -12,6 +12,7 @@ import traceback
 import prepare
 import util
 import getpass
+import time
 from exception.fusionexception import InputError, ClassException, StudentException
 from exception.fusionexception import SystemError
 
@@ -46,8 +47,8 @@ def fusion_system():
 
         elif command == "__test":
             try:
-                url = logs.get_path()
-                print(url)
+                demo = util.get_class_status("40N25UN9-MJB6-0I5X-486B-21J8ZA36", ins)
+                print(demo)
             except Exception as e:
                 print(traceback.format_exc())
                 continue
@@ -72,11 +73,16 @@ def fusion_system():
             elif command == "system date":
                 print(system.system_date())
 
-            elif command == "system set password":
+            elif command == "system reset password":
                 try:
-                    old_pwd = getpass.getpass("old password: ")
-                    new_pwd = getpass.getpass("new password: ")
-                    util.set_password(old_pwd, new_pwd)
+                    old_pwd = getpass.getpass("Old password: ")
+                    new_pwd = getpass.getpass("New password: ")
+                    verify_pwd = getpass.getpass("New password confirmation: ")
+                    if new_pwd == verify_pwd:
+                        util.set_password(old_pwd, new_pwd)
+                    else:
+                        print("Confirmation new password error. "
+                              "Change new password failed.")
                 except SystemError as e:
                     print("Change new password failed. Please input correct password.")
                     logs.error(str(e))
@@ -125,6 +131,18 @@ def fusion_system():
 
             elif command == "clear help":
                 help.help_doc("clear")
+
+            elif command == "clear system":
+                if util.check_clear_all_instance():
+                    print("System will be clear in 5 seconds.")
+                    if clears.clear_system(ins):
+                        print("System clean up success. It will shutdown in 5 seconds.")
+                        time.sleep(5)
+                        break
+                    else:
+                        continue
+                else:
+                    print("System clear abandon in client.")
 
             else:
                 print("Invalid command input '%s'. "
@@ -189,6 +207,7 @@ def fusion_system():
                     uuid = command_list[-1]
                     util.class_delete(ins, uuid)
                 except ClassException as e:
+                    logs.error(traceback.format_exc())
                     print(str(e))
                     continue
 
@@ -206,6 +225,36 @@ def fusion_system():
                 except ClassException as e:
                     print(str(e))
                     continue
+
+            elif command.startswith("class lock"):
+                try:
+                    command_list = command.split()
+                    if len(command_list) != 3:
+                        print("Invalid command input '%s'. "
+                            "Please input help for more information." % command)
+                        logs.error("Invalid command %s input." % command)
+                        continue
+
+                    uuid = command_list[-1]
+                    util.lock_class(uuid, ins)
+                except ClassException as e:
+                    logs.error(traceback.format_exc())
+                    print(str(e))
+
+            elif command.startswith("class unlock"):
+                try:
+                    command_list = command.split()
+                    if len(command_list) != 3:
+                        print("Invalid command input '%s'. "
+                          "Please input help for more information." % command)
+                        logs.error("Invalid command %s input." % command)
+                        continue
+
+                    uuid = command_list[-1]
+                    util.unlock_class(uuid, ins)
+                except ClassException as e:
+                    logs.error(traceback.format_exc())
+                    print(str(e))
 
             else:
                 print("Invalid command input '%s'. "
@@ -264,9 +313,11 @@ def fusion_system():
                     util.delete_student(uuid, ins)
 
                 except InputError as e:
+                    logs.error(traceback.format_exc())
                     print(str(e))
                     continue
                 except StudentException as e:
+                    logs.error(traceback.format_exc())
                     print(str(e))
                     continue
 
