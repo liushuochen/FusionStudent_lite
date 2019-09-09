@@ -236,7 +236,7 @@ def show_class(ins, uuid):
     return class_cmd.class_info(ins, uuid)
 
 
-def set_password(old_password, new_password):
+def set_password(new_password):
     """
     Change admin password.
     :param old_password: <str> input old password.
@@ -248,10 +248,6 @@ def set_password(old_password, new_password):
     with open(pwd_conf_path, "r") as pwd_file:
         data = json.load(pwd_file)
     pwd_file.close()
-
-    system_password = data["password"]
-    if old_password != system_password:
-        raise SystemError("Error password input.")
 
     data["password"] = new_password
     with open(pwd_conf_path, "w") as pwd_file:
@@ -374,3 +370,17 @@ def unlock_class(uuid, ins):
         raise ClassException("Class '%s' is not lock." % uuid, 402)
 
     return set_class_status(uuid, CLASS_STATUS_OPENING, ins)
+
+
+def get_password():
+    """
+    Get system password.
+    :return: <str> password
+    """
+    pwd_conf_path = root_path() + "/conf/keypair.json"
+    with open(pwd_conf_path, "r") as pwd_file:
+        data = json.load(pwd_file)
+    pwd_file.close()
+
+    system_password = data["password"]
+    return system_password

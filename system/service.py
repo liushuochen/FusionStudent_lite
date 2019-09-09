@@ -11,7 +11,7 @@ import logger.log as logs
 import traceback
 import prepare
 import util
-import getpass
+import api.client_api as api
 import time
 from exception.fusionexception import InputError, ClassException, StudentException
 from exception.fusionexception import SystemError
@@ -75,16 +75,15 @@ def fusion_system():
 
             elif command == "system reset password":
                 try:
-                    old_pwd = getpass.getpass("Old password: ")
-                    new_pwd = getpass.getpass("New password: ")
-                    verify_pwd = getpass.getpass("New password confirmation: ")
-                    if new_pwd == verify_pwd:
-                        util.set_password(old_pwd, new_pwd)
-                    else:
-                        print("Confirmation new password error. "
-                              "Change new password failed.")
+                    api.reset_password()
                 except SystemError as e:
-                    print("Change new password failed. Please input correct password.")
+                    print(str(e))
+                    logs.error(str(e))
+                    logs.error(traceback.format_exc())
+                    continue
+                except InputError as e:
+                    print("Confirmation new password error. "
+                          "Change new password failed.")
                     logs.error(str(e))
                     logs.error(traceback.format_exc())
                     continue
