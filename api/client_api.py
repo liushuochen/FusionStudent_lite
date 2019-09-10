@@ -4,6 +4,7 @@ client API
 import getpass
 import util
 import exception.fusionexception as fusionexp
+import logger.log as logs
 
 PASSWORD_MIN_LENGTH = 6
 
@@ -39,3 +40,14 @@ def password_policy(pwd):
         return False
 
     return True
+
+
+def create_student(ins, **kwargs):
+    """
+    Create a student instance.
+    :param kwargs: <dict> kwargs
+    :return: <None>
+    """
+    logs.info("Begin to create student.")
+    type = "student"
+    return util.create(type, ins, **kwargs)

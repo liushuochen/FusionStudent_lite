@@ -47,7 +47,7 @@ def fusion_system():
 
         elif command == "__test":
             try:
-                demo = util.get_class_status("40N25UN9-MJB6-0I5X-486B-21J8ZA36", ins)
+                demo = util.get_class_info("40N25UN9-MJB6-0I5X-486B-21J8ZA36", ins)
                 print(demo)
             except Exception as e:
                 print(traceback.format_exc())
@@ -268,7 +268,6 @@ def fusion_system():
                 try:
                     command_list = command.split()[2:]
                     index = 0
-                    type = "student"
                     name = None
                     sex = None
                     class_id = None
@@ -288,7 +287,11 @@ def fusion_system():
                                              % command_list[index])
                         index += 1
 
-                    util.create(type, ins, name=name, sex=sex, class_id=class_id)
+                    api.create_student(ins,
+                                       name=name,
+                                       sex=sex,
+                                       class_id=class_id)
+                    # util.create(type, ins, name=name, sex=sex, class_id=class_id)
                 except InputError as e:
                     print(str(e))
                     continue

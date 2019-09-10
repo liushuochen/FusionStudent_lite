@@ -209,7 +209,8 @@ def class_delete(ins, uuid):
         logs.error("Delete class failed. uuid '%s' not exist!" % uuid)
         raise ClassException("BadRequest: uuid '%s' not exist!" % uuid, 401)
 
-    if get_class_status(uuid, ins) == CLASS_STATUS_LOCK:
+    status = get_class_info(uuid, ins)["status"]
+    if status == CLASS_STATUS_LOCK:
         raise ClassException("Delete Class '%s' failed. Class is Lock!" % uuid
                              , 403)
 
@@ -271,9 +272,9 @@ def delete_student(stu_id, ins):
         raise StudentException("Student not found. Invalid student id '%s'." % stu_id,
                                400)
 
-    stu = ins["students"][stu_id]
-    class_uuid = stu.class_ins
-    class_status = get_class_status(class_uuid, ins)
+    class_info = get_class_info_by_student(stu_id, ins)
+    class_status = class_info["status"]
+    class_uuid = class_info["uuid"]
     if class_status == CLASS_STATUS_LOCK:
         raise StudentException("Delete student %s failed. Class %s is Lock."
                                % (stu_id, class_uuid), 402)
@@ -320,24 +321,12 @@ def set_class_status(uuid, status, ins):
     if status not in CLASS_STATUS_POOL:
         raise ClassException("Invalid new class status '%s'." % status, 404)
 
-    current_status = get_class_status(uuid, ins)
+    current_status = get_class_info(uuid, ins)["status"]
     if current_status == status:
         raise ClassException("Set class '%s' status failed. Class status is %s now."
                              % (uuid, current_status), 403)
 
     return class_cmd.set_status(uuid, status, ins)
-
-
-def get_class_status(uuid, ins):
-    """
-    Get class status.
-    :param uuid: <str> class uuid
-    :param ins: <dict> instance dict
-    :return: <str> class status
-    """
-    if uuid not in ins["classes"]:
-        raise ClassException("Class '%s' not found.", 404)
-    return ins["classes"][uuid].status
 
 
 def lock_class(uuid, ins):
@@ -350,7 +339,7 @@ def lock_class(uuid, ins):
     if uuid not in ins["classes"]:
         raise ClassException("Class '%s' not found." % uuid, 404)
 
-    if get_class_status(uuid, ins) != CLASS_STATUS_OPENING:
+    if get_class_info(uuid, ins)["status"] != CLASS_STATUS_OPENING:
         raise ClassException("Class %s is not Opening, can not Lock." % uuid, 402)
 
     return set_class_status(uuid, CLASS_STATUS_LOCK, ins)
@@ -366,7 +355,7 @@ def unlock_class(uuid, ins):
     if uuid not in ins["classes"]:
         raise ClassException("Class '%s' not found." % uuid, 404)
 
-    if get_class_status(uuid, ins) != CLASS_STATUS_LOCK:
+    if get_class_info(uuid, ins)["status"] != CLASS_STATUS_LOCK:
         raise ClassException("Class '%s' is not lock." % uuid, 402)
 
     return set_class_status(uuid, CLASS_STATUS_OPENING, ins)
@@ -384,3 +373,45 @@ def get_password():
 
     system_password = data["password"]
     return system_password
+
+
+def get_class_info(uuid, ins):
+    """
+    Get class information.
+    :param uuid: <str> class uuid
+    :param ins: <dict> instance dict
+    :return: <dict> class information
+    """
+    if uuid not in ins["classes"]:
+        logs.info("Get class info failed. Class %s not found." % uuid)
+        raise ClassException("class %s not found." % uuid, 404)
+
+    class_instance = ins["classes"][uuid]
+    information = {
+        "uuid": uuid,
+        "name": class_instance.name,
+        "size": class_instance.size,
+        "remark": class_instance.remark,
+        "student number": class_instance.student_number,
+        "status": class_instance.status,
+        "free": class_instance.size - class_instance.student_number
+    }
+
+    return information
+
+
+def get_class_info_by_student(uuid, ins):
+    """
+    Get class information by student uuid.
+    :param uuid: <str> student uuid
+    :param ins: <dict> instance dict
+    :return: <dict> class information
+    """
+    if uuid not in ins["students"]:
+        logs.info("Get class info failed. Student %s not found." % uuid)
+        raise StudentException("Student %s not found" % uuid, 404)
+
+    student = ins["students"][uuid]
+    class_uuid = student.class_ins
+
+    return get_class_info(class_uuid, ins)

@@ -18,11 +18,21 @@ def create_student(body, ins):
     :return: <function> build_student()
     """
     class_uuid = body["class"]
+    if class_uuid is None:
+        logs.info("Begin to scheduler classes.")
+        class_uuid = scheduler(ins)
+        if len(class_uuid) == 0:
+            raise ClassException("Find class failed."
+                                 " There are no classes can be used", 403)
+        body["class"] = class_uuid
+
     if class_uuid not in ins["classes"]:
-        logs.error("Create student failed. Point class '%s' not found." % class_uuid)
+        logs.error("Create student failed. Point class '%s' not found."
+                   % class_uuid)
         raise ClassException("Class %s not found." % class_uuid, 400)
 
-    if util.get_class_status(class_uuid, ins) == util.CLASS_STATUS_LOCK:
+    status = util.get_class_info(class_uuid, ins)["status"]
+    if status == util.CLASS_STATUS_LOCK:
         raise StudentException("Create student failed. class '%s' status is Lock."
                                % class_uuid, 402)
 
@@ -154,3 +164,30 @@ def show_student(uuid, ins):
     print("+" + "-" * 9 + "+" + "-" * 40)
 
     return
+
+
+def scheduler(ins):
+    """
+    scheduler class to create student.
+    :param ins: <dict> instance dict
+    :return: <str> class uuid
+    """
+    for cls_uuid in ins["classes"]:
+        class_info = util.get_class_info(cls_uuid, ins)
+        status = class_info["status"]
+        if status != util.CLASS_STATUS_OPENING:
+            logs.info("Select class %s failed. "
+                      "Reason: class status is not opening." % cls_uuid)
+            continue
+
+        free = class_info["free"]
+        if free <= 0:
+            logs.info("Select class %s failed. "
+                      "Reason: class free size is not enough.")
+            continue
+
+        logs.info("Select class %s." % cls_uuid)
+        return cls_uuid
+
+    logs.error("Select class error. There are no class can be used.")
+    return ""
