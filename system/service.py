@@ -134,7 +134,7 @@ def fusion_system():
             elif command == "clear system":
                 if util.check_clear_all_instance():
                     print("System will be clear in 5 seconds.")
-                    if clears.clear_system(ins):
+                    if api.restore_factory_setting(ins):
                         print("System clean up success. It will shutdown in 5 seconds.")
                         time.sleep(5)
                         break

@@ -7,6 +7,8 @@ import util
 import time
 import logger.log as logs
 import json
+import configparser
+import traceback
 
 
 def clear_logs(logs_type):
@@ -37,7 +39,7 @@ def clear_system(ins):
     """
     Clear system
     :param ins: instance dict
-    :return: <None>
+    :return: <bool>
     """
     time.sleep(5)
 
@@ -56,11 +58,16 @@ def clear_system(ins):
         clear_logs("all")
 
         # set up keypair configure file
+        conf = configparser.ConfigParser()
         pwd_conf_path = util.root_path() + "/conf/keypair.json"
+        sys_config_path = util.root_path() + "/conf/sys.ini"
+        conf.read(sys_config_path)
+        init_pwd = conf.get("default", "password")
         with open(pwd_conf_path, "r") as pwd_file:
             data = json.load(pwd_file)
         pwd_file.close()
         data["login"] = False
+        data["password"] = init_pwd
         with open(pwd_conf_path, "w") as pwd_file:
             json.dump(data, pwd_file, indent=4)
         pwd_file.close()

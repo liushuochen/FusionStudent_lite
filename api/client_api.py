@@ -5,6 +5,7 @@ import getpass
 import util
 import exception.fusionexception as fusionexp
 import logger.log as logs
+import command.clear_command as clear_cmd
 
 PASSWORD_MIN_LENGTH = 6
 
@@ -51,3 +52,11 @@ def create_student(ins, **kwargs):
     logs.info("Begin to create student.")
     type = "student"
     return util.create(type, ins, **kwargs)
+
+
+def restore_factory_setting(ins):
+    """
+    Restore factory setting for FSP.
+    :return: <boolean>
+    """
+    return clear_cmd.clear_system(ins)
