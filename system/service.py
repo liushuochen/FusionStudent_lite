@@ -343,6 +343,17 @@ def fusion_system():
                     logs.error(traceback.format_exc())
                     continue
 
+            else:
+                print("Invalid command input '%s'. "
+                      "Please input help for more information." % command)
+                logs.error("Invalid command %s input." % command)
+
+        elif command.startswith("doc"):
+            if command == "doc help":
+                help.help_doc("doc")
+
+            elif command == "doc":
+                api.open_doc()
 
             else:
                 print("Invalid command input '%s'. "
