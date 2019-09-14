@@ -9,7 +9,6 @@ import util
 import json
 import getpass
 
-
 def system_pre(func):
     def wapper(*args, **kwargs):
         start = time()
@@ -73,8 +72,7 @@ def login():
         print("Please input correct username.")
         return False
 
-
-
 if __name__ == "__main__":
     if login():
         main()
+        # app.run()

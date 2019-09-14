@@ -6,6 +6,7 @@ import util
 import exception.fusionexception as fusionexp
 import logger.log as logs
 import command.clear_command as clear_cmd
+import command.doc_command as doc_cmd
 
 PASSWORD_MIN_LENGTH = 6
 
@@ -60,3 +61,11 @@ def restore_factory_setting(ins):
     :return: <boolean>
     """
     return clear_cmd.clear_system(ins)
+
+def open_doc():
+    """
+    Open document file.
+    :return: <None>
+    """
+    logs.info("Begin to open document file.")
+    return doc_cmd.open_web_use_doc()

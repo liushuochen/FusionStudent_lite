@@ -19,6 +19,7 @@ def help_doc(type="help"):
             clear help:  clear resource operation to help.
             class help:  class operation to help.
             student help:  student operation to help.
+            doc help:   documents shop.
         """
 
     elif type == "system":
@@ -72,6 +73,11 @@ def help_doc(type="help"):
 
             student show <uuid>: show student information.
                 <uuid> student uuid.
+        """
+
+    elif type == "doc":
+        message = """
+            doc:    open operation documents.
         """
 
     print(message)
