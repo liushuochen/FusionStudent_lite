@@ -17,6 +17,7 @@ CLASS_UUID_POOL = string.ascii_uppercase + string.digits
 CLASS_STATUS_OPENING = "Opening"
 CLASS_STATUS_ERROR = "Error"
 CLASS_STATUS_LOCK = "Lock"
+CLASS_STATUS_DELETE = "Delete"
 
 CLASS_STATUS_POOL = {
     CLASS_STATUS_OPENING,
