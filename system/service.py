@@ -89,7 +89,7 @@ def fusion_system():
                     continue
 
             else:
-                print("Invalid command input '%s'. "
+                print("Error: unknown command '%s'. "
                       "Please input help for more information." % command)
                 logs.error("Invalid command input: %s. 404" % command)
                 continue
@@ -144,7 +144,7 @@ def fusion_system():
                     print("System clear abandon in client.")
 
             else:
-                print("Invalid command input '%s'. "
+                print("Error: unknown command '%s'. "
                       "Please input help for more information." % command)
                 logs.error("Invalid command %s input." % command)
 
@@ -198,7 +198,7 @@ def fusion_system():
                 try:
                     command_list = command.split()
                     if len(command_list) != 3:
-                        print("Invalid command input '%s'. "
+                        print("Error: unknown command '%s'. "
                               "Please input help for more information." % command)
                         logs.error("Invalid command %s input." % command)
                         continue
@@ -291,7 +291,6 @@ def fusion_system():
                                        name=name,
                                        sex=sex,
                                        class_id=class_id)
-                    # util.create(type, ins, name=name, sex=sex, class_id=class_id)
                 except InputError as e:
                     print(str(e))
                     continue
@@ -309,7 +308,7 @@ def fusion_system():
                 try:
                     command_list = command.split()
                     if len(command_list) != 3:
-                        raise InputError("Invalid command '%s' input. "
+                        raise InputError("Error: unknown command '%s'. "
                                          "Please input help for more information.")
                     uuid = command_list[-1]
                     util.delete_student(uuid, ins)
@@ -327,7 +326,7 @@ def fusion_system():
                 try:
                     command_list = command.split()
                     if len(command_list) != 3:
-                        raise InputError("Invalid command '%s' input. "
+                        raise InputError("Error: unknown command '%s'. "
                                          "Please input help for more information.")
                     uuid = command_list[-1]
                     stu_cmd.show_student(uuid, ins)
@@ -344,7 +343,7 @@ def fusion_system():
                     continue
 
             else:
-                print("Invalid command input '%s'. "
+                print("Error: unknown command '%s'. "
                       "Please input help for more information." % command)
                 logs.error("Invalid command %s input." % command)
 
@@ -356,7 +355,7 @@ def fusion_system():
                 api.open_doc()
 
             else:
-                print("Invalid command input '%s'. "
+                print("Error: unknown command '%s'. "
                       "Please input help for more information." % command)
                 logs.error("Invalid command %s input." % command)
 
