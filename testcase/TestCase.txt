@@ -1,0 +1,58 @@
+FusionStudent Platform lite v6.0
+测试用例
+
+一、运行
+1. 运行系统
+    用例编号: TC00600001
+    前置条件: FusionStudent Platform lite 安装部署完毕
+    测试步骤:
+        <1> 进入目录 ../FusionStudent_lite
+        <2> 执行命令：python platform.py
+    预期结果:
+        提示用户输入用户名
+    测试结果:
+        测试通过
+
+
+二、登录
+1. 使用root@fusionstudent账号登录
+    用例编号: TC00600002
+    前置条件: FusionStudent Platform lite 运行
+    测试步骤:
+        <1> 输入用户名: root@fusionstudent
+    预期结果:
+        登录系统成功
+    测试结果:
+        测试通过
+
+2. 使用admin账号登录
+    用例编号: TC00600003
+    前置条件: FusionStudent Platform lite 运行
+    测试步骤:
+        <1> 输入用户名: admin
+        <2> 输入密码: 2019fsp
+    预期结果:
+        系统登录成功
+    测试结果:
+        测试通过
+
+3. [异常测试] 使用admin账号登录，并使用错误的密码
+    用例编号: TC00600004
+    前置条件: FusionStudent Platform lite 运行
+    测试步骤:
+        <1> 输入用户名: admin
+        <2> 输入密码: 自定义错误的密码
+    预期结果:
+        系统登录失败，提示密码错误
+    测试结果:
+        测试通过
+
+4. [异常测试] 使用错误的账号登录
+    用例编号: TC00600005
+    前置条件: FusionStudent Platform lite 运行
+    测试步骤:
+        <1> 输入用户名: 这里的用户名不能是root@fusionstudent和admin用户名
+    预期结果:
+        系统登录失败，提示用户名非法
+    测试结果:
+        测试通过
