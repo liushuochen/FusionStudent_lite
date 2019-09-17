@@ -59,3 +59,12 @@ FusionStudent Platform lite v6.0
 
 
 二、帮助文档
+1. 帮助文档总览
+    用例编号: TC00600006
+    前置条件: 用户登录成功
+    测试步骤:
+        <1> 输入命令 'help'
+    预期结果:
+        展示system help、clear help、class help、student help和doc help命令提示。
+    测试结果:
+        测试通过
