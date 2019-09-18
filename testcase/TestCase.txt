@@ -68,3 +68,14 @@ FusionStudent Platform lite v6.0
         展示system help、clear help、class help、student help和doc help命令提示。
     测试结果:
         测试通过
+
+2. 系统帮助文档
+    用例编号: TC00600007
+    前置条件: 用户登录成功
+    测试步骤:
+        <1> 输入命令 'system help'
+    预期结果:
+        展示 'system version'，'system exit'，'system date'，
+        'system reset password' 命令的说明文档。
+    测试结果:
+        测试通过
