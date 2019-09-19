@@ -79,3 +79,13 @@ FusionStudent Platform lite v6.0
         'system reset password' 命令的说明文档。
     测试结果:
         测试通过
+
+3. 资源清理帮助文档
+    用例编号: TC00600008
+    前置条件: 用户登录成功
+    测试步骤:
+        <1> 输入命令 'clear help'
+    预期结果:
+        展示 'clear log'，'clear system' 命令的说明文档
+    测试结果:
+        测试通过
