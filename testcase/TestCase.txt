@@ -89,3 +89,14 @@ FusionStudent Platform lite v6.0
         展示 'clear log'，'clear system' 命令的说明文档
     测试结果:
         测试通过
+
+4. 教室帮助文档
+    用例编号: TC00600009
+    前置条件: 用户登录成功
+    测试步骤:
+        <1> 输入命令 'class help'
+    预期结果:
+        展示 'class create', 'class list', 'class delete', 'class show',
+        'class lock', 'class unlock' 命令的说明文档
+    测试结果:
+        测试通过
