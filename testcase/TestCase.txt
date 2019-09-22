@@ -100,3 +100,14 @@ FusionStudent Platform lite v6.0
         'class lock', 'class unlock' 命令的说明文档
     测试结果:
         测试通过
+
+5. 学生帮助文档
+    用例编号: TC00600010
+    前置条件: 用户登录成功
+    测试步骤:
+        <1> 输入命令 'student help'
+    预期结果:
+        展示 'student create'、'student list'、'student delete'和
+        'student show' 命令的说明文档
+    测试结果:
+        测试通过
